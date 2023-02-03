@@ -1,0 +1,5 @@
+# ignore latest.log
+latest.log
+
+# ignore older logs
+log-*.log
