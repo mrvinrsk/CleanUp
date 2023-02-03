@@ -1,6 +1,8 @@
 import tempfile
-from util_functions import *
+
 from plyer import notification
+
+from util_functions import *
 
 home = os.path.expanduser("~")
 directories = [

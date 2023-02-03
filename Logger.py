@@ -1,7 +1,7 @@
+import locale
 import logging
 import os
 import time
-import locale
 
 date_formats = {
     'default': '%m/%d/%Y | %I:%M:%S %p',

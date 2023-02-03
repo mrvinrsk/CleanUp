@@ -1,9 +1,11 @@
+import os.path
 import tkinter as tk
 import tkinter.font as tkfont
 
 from DeletionProcess import DeletionProcess
 from DeletionProcess import Type as DeletionProcessType
 from Logger import CleanUpLogger
+from Popup import *
 
 logger = CleanUpLogger()
 
@@ -72,16 +74,26 @@ def print_states():
     print("Browserdata: " + str(get_checkbox_value(deletionBoxes, "Browserdata")))
 
 
+def show_logs():
+    if os.path.exists("latest.log"):
+        os.startfile("latest.log", 'open')
+    else:
+        show_text_popup("CleanUp Logs", "Logs couldn't be loaded, please consider restarting the program.")
+
+
 # Create a checkbox for each option
 for option, var in deletionBoxes.items():
     checkbox = tk.Checkbutton(root, text=option, variable=var[0], anchor="w", bg=root.bg_color,
                               activebackground=root.fg_color, fg=root.primary_color)
     checkbox.pack(fill="x")
 
-button = tk.Button(root, text="Remove", command=remove_selected)
-button.pack(anchor="w")
+remove_button = tk.Button(root, text="Remove", command=remove_selected)
+remove_button.pack(anchor="w")
 
-root.mainloop()
+log_button = tk.Button(root, text="Show Logs", command=show_logs)
+log_button.pack(anchor="w")
 
 logger.info("UI built.")
+root.mainloop()
+
 logger.info("Program started.")
