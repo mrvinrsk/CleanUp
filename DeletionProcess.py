@@ -47,4 +47,8 @@ class DeletionProcess:
 
     def delete(self):
         self.logger.warning('Removing files of the following types: ' + ", ".join(map(lambda _type: _type.name, self.types)))
+
+        for _type in self.types:
+            self.logger.warning('Start removing files of type ' + _type.name + ' in paths: ' + ", ".join(_type.value))
+
         pass

@@ -1,3 +1,4 @@
+import datetime
 import os.path
 import tkinter as tk
 import tkinter.font as tkfont
@@ -7,6 +8,7 @@ from DeletionProcess import Type as DeletionProcessType
 from Logger import CleanUpLogger
 from Popup import *
 
+start_time = datetime.datetime.now()
 logger = CleanUpLogger()
 
 
@@ -94,6 +96,10 @@ log_button = tk.Button(root, text="Show Logs", command=show_logs)
 log_button.pack(anchor="w")
 
 logger.info("UI built.")
-root.mainloop()
 
-logger.info("Program started.")
+end_time = datetime.datetime.now()
+needed_starting_time = end_time - start_time
+
+logger.info("Program started in " + str(needed_starting_time.microseconds / 1000) + "ms")
+
+root.mainloop()
