@@ -2,6 +2,7 @@ import datetime
 import os.path
 import tkinter as tk
 import tkinter.font as tkfont
+from tkinter import ttk
 
 from DeletionProcess import DeletionProcess
 from DeletionProcess import Type as DeletionProcessType
@@ -22,18 +23,24 @@ root = tk.Tk()
 root.protocol("WM_DELETE_WINDOW", on_closing)
 root.title("CleanUp")
 
+# Style
+style = ttk.Style()
+style.theme_use("default")
+style.configure("TButton", relief="flat", padding=(0.5, 1), background="#37ABBA",
+                foreground="#F2F2F2")
+
+style.map("TButton", background=[("active", "#37ABBA"), ("pressed", "#37ABBA")])
+
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-width = 400
-height = 150
+width = 500
+height = 250
 
 x = (screen_width / 2) - (width / 2)
 y = (screen_height / 2) - (height / 2)
 
 root.geometry("%dx%d+%d+%d" % (width, height, x, y))
-
-root.resizable(0, 0)
 
 root.bg_color = "#343434"
 root.fg_color = "#F2F2F2"
@@ -83,17 +90,29 @@ def show_logs():
         show_text_popup("CleanUp Logs", "Logs couldn't be loaded, please consider restarting the program.")
 
 
+# create frame for content
+content = tk.Frame(root, bg=root.bg_color)
+content.pack(side="top", fill="both", expand=True, padx=10, pady=10)
+
 # Create a checkbox for each option
 for option, var in deletionBoxes.items():
-    checkbox = tk.Checkbutton(root, text=option, variable=var[0], anchor="w", bg=root.bg_color,
+    checkbox = tk.Checkbutton(content, text=option, variable=var[0], anchor="w", bg=root.bg_color,
                               activebackground=root.fg_color, fg=root.primary_color)
-    checkbox.pack(fill="x")
 
-remove_button = tk.Button(root, text="Remove", command=remove_selected)
-remove_button.pack(anchor="w")
+    # add checkbox to the frame
+    checkbox.pack(side="top", anchor="w")
 
-log_button = tk.Button(root, text="Show Logs", command=show_logs)
-log_button.pack(anchor="w")
+# put two buttons next to each other
+button_frame = tk.Frame(content, bg=root.bg_color)
+button_frame.pack(anchor="w", ipady=10)
+
+# create a button to remove the selected files
+remove_button = ttk.Button(button_frame, text="Remove", command=remove_selected)
+remove_button.pack(side="left")
+
+# create a button to show the logs
+logs_button = ttk.Button(button_frame, text="Show logs", command=show_logs)
+logs_button.pack(side="right")
 
 logger.info("UI built.")
 

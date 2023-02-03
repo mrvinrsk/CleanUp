@@ -2,7 +2,10 @@ import os
 import tempfile
 from enum import Enum
 
+from plyer import notification
+
 from Logger import CleanUpLogger
+from util_functions import readable_bytes, delete_files
 
 unix_home = os.path.expanduser("~")
 windows_home = os.environ['USERPROFILE']
@@ -46,9 +49,33 @@ class DeletionProcess:
         self.types = types
 
     def delete(self):
+        if len(self.types) == 0:
+            self.logger.info("No deletion types selected.")
+            return
+
         self.logger.warning('Removing files of the following types: ' + ", ".join(map(lambda _type: _type.name, self.types)))
 
+        total_deleted_bytes = 0
         for _type in self.types:
-            self.logger.warning('Start removing files of type ' + _type.name + ' in paths: ' + ", ".join(_type.value))
+            search_paths = []
 
-        pass
+            for path in _type.value:
+                if path not in search_paths:
+                    if os.path.exists(path):
+                        search_paths.append(path)
+
+            self.logger.warning('Start removing files of type ' + _type.name + ' in paths: ' + ", ".join(search_paths))
+
+            for path in search_paths:
+                result = delete_files(path)
+                deleted_bytes = result[0]
+                deleted_files = result[1]
+                total_deleted_bytes += deleted_bytes
+                self.logger.info('Removed ' + readable_bytes(deleted_bytes) + ' in ' + path + ' by removing ' + str(deleted_files) + ' file' + ('s' if deleted_files != 1 else '') + '.')
+
+        notification.notify(
+            title="Freed up",
+            message="We've freed up " + str(readable_bytes(total_deleted_bytes)) + " of space.",
+            app_name="CleanUp",
+            timeout=5
+        )
