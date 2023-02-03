@@ -2,6 +2,8 @@ import os
 import tempfile
 from enum import Enum
 
+from Logger import CleanUpLogger
+
 unix_home = os.path.expanduser("~")
 windows_home = os.environ['USERPROFILE']
 
@@ -39,8 +41,10 @@ class Type(Enum):
 
 
 class DeletionProcess:
-    def __main__(self, types):
+    def __init__(self, types):
+        self.logger = CleanUpLogger()
         self.types = types
 
     def delete(self):
+        self.logger.warning('Removing files of the following types: ' + ", ".join(map(lambda _type: _type.name, self.types)))
         pass
