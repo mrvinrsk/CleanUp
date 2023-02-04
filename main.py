@@ -67,7 +67,7 @@ def remove_selected():
         if deletionBoxes[dbox[0]][0].get() == 1:
             types.append(dbox[1][1])
 
-    process = DeletionProcess(types=types)
+    process = DeletionProcess(types=types, show_details_after=should_show_details.get() == 1)
     process.delete()
 
 
@@ -101,6 +101,10 @@ for option, var in deletionBoxes.items():
 
     # add checkbox to the frame
     checkbox.pack(side="top", anchor="w")
+
+should_show_details = tk.IntVar()
+showDetailsCheckbox = tk.Checkbutton(content, text="Show details after finishing", anchor="w", bg=root.bg_color, variable=should_show_details)
+showDetailsCheckbox.pack(side="top", anchor="w")
 
 # put two buttons next to each other
 button_frame = tk.Frame(content, bg=root.bg_color)
