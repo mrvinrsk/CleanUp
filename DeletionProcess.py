@@ -100,7 +100,7 @@ class DeletionProcess:
         tk.Frame(details, padx=10, pady=10).pack()
 
         tk.Label(details, text="Deleted bytes: " + readable_bytes(self.get_deleted_bytes())).pack()
-        tk.Label(details, text="Deleted files: " + readable_bytes(self.get_deleted_files())).pack()
+        tk.Label(details, text="Deleted files: " + str(self.get_deleted_files())).pack()
         tk.Label(details, text="Checked paths: " + str(len(self.get_checked_paths()))).pack()
 
         path_labels = []
