@@ -3,8 +3,6 @@ import tempfile
 from enum import Enum
 
 from plyer import notification
-import platform
-from win10toast import ToastNotifier
 
 import tkinter as tk
 from Logger import CleanUpLogger
@@ -63,18 +61,18 @@ class DeletionProcess:
         self.show_details_after = show_details_after
 
         self.was_executed = False
+        self.deleted_files = None
         self.deleted_bytes = None
         self.checked_paths = None
-
-
-    def get_deleted_bytes(self):
-        if self.was_executed:
-            return self.deleted_bytes
-        return -1
 
     def get_deleted_files(self):
         if self.was_executed:
             return self.deleted_files
+        return -1
+
+    def get_deleted_bytes(self):
+        if self.was_executed:
+            return self.deleted_bytes
         return -1
 
     def get_checked_paths(self):
@@ -102,7 +100,33 @@ class DeletionProcess:
         tk.Frame(details, padx=10, pady=10).pack()
 
         tk.Label(details, text="Deleted bytes: " + readable_bytes(self.get_deleted_bytes())).pack()
-        tk.Label(details, text="Checked paths: " + ", ".join(self.get_checked_paths())).pack()
+        tk.Label(details, text="Deleted files: " + readable_bytes(self.get_deleted_files())).pack()
+        tk.Label(details, text="Checked paths: " + str(len(self.get_checked_paths()))).pack()
+
+        path_labels = []
+
+        def show_paths():
+
+            if button['text'] == "Show paths":
+                button['text'] = "Hide paths"
+
+                paths_heading = tk.Label(details, text="Paths:")
+                paths_heading.pack()
+                path_labels.append(paths_heading)
+
+                for path in self.get_checked_paths():
+                    label = tk.Label(details, text=path)
+                    label.pack()
+                    path_labels.append(label)
+
+            else:
+                button['text'] = "Show paths"
+
+                for label in path_labels:
+                    label.destroy()
+
+        button = tk.Button(details, text="Show paths", command=show_paths)
+        button.pack()
 
         details.mainloop()
 
@@ -117,6 +141,8 @@ class DeletionProcess:
         self.logger.warning('Removing files of the following types: ' + ", ".join(map(lambda _type: _type.name, self.types)))
 
         total_deleted_bytes = 0
+        total_deleted_files = 0
+
         for _type in self.types:
             search_paths = []
 
@@ -129,11 +155,16 @@ class DeletionProcess:
 
             for path in search_paths:
                 result = delete_files(path)
+
                 deleted_bytes = result[0]
                 deleted_files = result[1]
+
                 total_deleted_bytes += deleted_bytes
+                total_deleted_files += deleted_files
+
                 self.logger.info('Removed ' + readable_bytes(deleted_bytes) + ' in ' + path + ' by removing ' + str(deleted_files) + ' file' + ('s' if deleted_files != 1 else '') + '.')
 
+        self.deleted_files = total_deleted_files
         self.deleted_bytes = total_deleted_bytes
         self.checked_paths = search_paths
 
