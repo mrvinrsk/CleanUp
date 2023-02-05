@@ -16,15 +16,21 @@ def delete_files(path):
 
                 try:
                     if os.path.isfile(filepath) or os.path.islink(filepath):
-                        bytesize += os.path.getsize(filepath)
+                        fsize = os.path.getsize(filepath)
                         os.unlink(filepath)
-                        deleted_files += 1
-                        print("File '" + filepath + "' deleted.")
+
+                        if not os.path.exists(filepath):
+                            bytesize += fsize
+                            deleted_files += 1
+                            print("File '" + filepath + "' deleted.")
                     elif os.path.isdir(filepath):
-                        bytesize += os.path.getsize(filepath)
+                        fsize = os.path.getsize(filepath)
                         shutil.rmtree(filepath)
-                        deleted_files += 1
-                        print("Folder '" + filepath + "' deleted.")
+
+                        if not os.path.exists(filepath):
+                            bytesize += fsize
+                            deleted_files += 1
+                            print("Folder '" + filepath + "' deleted.")
                 except Exception as e:
                     print("Failed to delete %s. Reason: %s" % (filepath, e))
 

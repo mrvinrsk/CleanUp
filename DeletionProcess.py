@@ -150,6 +150,10 @@ class DeletionProcess:
                 if path not in search_paths:
                     if os.path.exists(path):
                         search_paths.append(path)
+                    else:
+                        print("Ignoring Path '" + path + "', as it does not exist.")
+                else:
+                    print("Path '" + path + "' is already in the list of paths to search.")
 
             self.logger.warning('Start removing files of type ' + _type.name + ' in paths: ' + ", ".join(search_paths))
 
@@ -176,8 +180,7 @@ class DeletionProcess:
                     title="Freed up",
                     message="We've freed up " + str(readable_bytes(total_deleted_bytes)) + " of space.",
                     app_name="CleanUp",
-                    timeout=5,
-                    callback=self.show_details
+                    timeout=5
                 )
 
         else:
