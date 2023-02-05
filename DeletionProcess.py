@@ -166,7 +166,10 @@ class DeletionProcess:
                 total_deleted_bytes += deleted_bytes
                 total_deleted_files += deleted_files
 
-                self.logger.info('Removed ' + readable_bytes(deleted_bytes) + ' in ' + path + ' by removing ' + str(deleted_files) + ' file' + ('s' if deleted_files != 1 else '') + '.')
+                if deleted_bytes > 0:
+                    self.logger.info('Removed ' + readable_bytes(deleted_bytes) + ' in ' + path + ' by removing ' + str(deleted_files) + ' file' + ('s' if deleted_files != 1 else '') + '.')
+                else:
+                    self.logger.info('No files were removed in ' + path + '.')
 
         self.deleted_files = total_deleted_files
         self.deleted_bytes = total_deleted_bytes
